@@ -221,7 +221,7 @@ write_dat<-function(x,fname,rows=F){
   write.table(x,sep="\t",quote = F,row.names = rows,col.names=F,file = fname)
 }
 
-run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter_thres=0.75,min_reads=0,min_wells=2,well_pos=3,wellset1=get_well_subset(1:16,1:24),compute=T,backend="cupy"){ #this is with gpu backend
+run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter_thres=0.5,min_reads=0,min_wells=2,well_pos=3,wellset1=get_well_subset(1:16,1:24),compute=T,backend="numpy"){ #this is with cpu backend
   print("start")
   print(Sys.time())
   mlist<-lapply(list.files(path = folder_path,full.names = T),fread)
