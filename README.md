@@ -1,5 +1,5 @@
-# TIRTL
-Code for paired TCR data analysis from TIRTL-seq experiments.
+# TIRTL-seq data analysis pipeline
+Code for paired TCR data analysis from TIRTL-seq experiments. Please see the [preprint](https://www.biorxiv.org/content/10.1101/2024.09.16.613345v1) for details.
 
 ## Installation
 ### Requirements
