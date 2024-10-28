@@ -33,11 +33,11 @@ def madhyper_process(prefix):
         #pairs = mx.array(np.argwhere(np.array(mask_condition, copy=False)))
     
         result = { #this works in cupy
-              'alpha_nuc': 1+(rowinds_bigmas[row_range][pairs[:, 0]]).get(),
-              'beta_nuc': 1+(rowinds_bigmbs[pairs[:, 1]]).get(),
-              'wij': (overlaps[pairs[:, 0], pairs[:, 1]]).get(),
-              'wa': (a_total[:,0][pairs[:, 0]]).get(),
-              'wb': (b_total[:,0][pairs[:, 1]]).get()
+              'alpha_nuc': 1+(rowinds_bigmas[row_range][pairs[:, 0]]),
+              'beta_nuc': 1+(rowinds_bigmbs[pairs[:, 1]]),
+              'wij': (overlaps[pairs[:, 0], pairs[:, 1]]),
+              'wa': (a_total[:,0][pairs[:, 0]]),
+              'wb': (b_total[:,0][pairs[:, 1]])
         }
 
         #result = {
@@ -110,12 +110,12 @@ def correlation_process(prefix,min_wells=2):
         #pairs = mx.array(np.argwhere(np.array(mask_condition, copy=False))) #this should work with mlx
 
         result = { #this works in cupy
-              'alpha_nuc': 1+(rowinds_bigmas[row_range][pairs[:, 0]]).get(),
-              'beta_nuc': 1+(rowinds_bigmbs[pairs[:, 1]]).get(),
-              'r': (pairwise_cors_method2[pairs[:, 0], pairs[:, 1]]).get(),
-              'wij': (overlaps[pairs[:, 0], pairs[:, 1]]).get(),
-              'wa': (a_total[:,0][pairs[:, 0]]).get(),
-              'wb': (b_total[:,0][pairs[:, 1]]).get()
+              'alpha_nuc': 1+(rowinds_bigmas[row_range][pairs[:, 0]]),
+              'beta_nuc': 1+(rowinds_bigmbs[pairs[:, 1]]),
+              'r': (pairwise_cors_method2[pairs[:, 0], pairs[:, 1]]),
+              'wij': (overlaps[pairs[:, 0], pairs[:, 1]]),
+              'wa': (a_total[:,0][pairs[:, 0]]),
+              'wb': (b_total[:,0][pairs[:, 1]])
         }
 
         #result = { #this works in mlx

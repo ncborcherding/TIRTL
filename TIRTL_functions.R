@@ -273,7 +273,8 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   print(Sys.time())
   if(compute==T)
     if(backend=="cupy")system(paste0("python3 cupy_backend_script.py ",prefix,collapse=""))
-    else system(paste0("python3 numpy_backend_script.py ",prefix,collapse=""))
+    #else if(backend=="mlx")system(paste0("python3 mlx_backend_script.py ",prefix,collapse="")) not implemented yet
+      else{system(paste0("python3 numpy_backend_script.py ",prefix,collapse=""))}
   # here goes SYS call to python script. 
   #python3 mlx_madhype_script ~/R_projects/mlx_dev/plate6
   # and here we go read it: 
