@@ -18,8 +18,7 @@ pip install numpy pandas
 pip install cupy
 ```
 ## Quick Start
-
-For the basic usage of pairing pipeline, you can run the following commands in R:
+Install dependencies, download repository and run run the following commands in R:
 ```R
 source("TIRTL_functions.R")
 # to run on cpu
