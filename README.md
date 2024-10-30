@@ -1,11 +1,13 @@
 # TIRTL-seq data analysis pipeline
-Code for paired TCR data analysis from TIRTL-seq experiments. Please see the [preprint](https://www.biorxiv.org/content/10.1101/2024.09.16.613345v1) for details.
+Code for paired TCR data analysis from TIRTL-seq experiments. Please see the [preprint](https://www.biorxiv.org/content/10.1101/2024.09.16.613345v1) for details. Data for the manuscript is available at Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14010377.svg)](https://doi.org/10.5281/zenodo.14010377).
 
 ## Installation
 ### Requirements
 
 For Nvidia GPU functionality you will need to have CUDA installed. You can install it from [here](https://developer.nvidia.com/cuda-downloads).
 For Apple Silicon GPU install Apple MLX library from [here](https://github.com/ml-explore/mlx).
+
+
 
 R dependencies are _Matrix_ and _data.table_ packages, available by default with most distributions. If not, you can install them by running from R console:
 ```R
@@ -31,9 +33,10 @@ test_gpu_nvidia<-run_single_point_analysis_sub_gpu("data/",backend="cupy")
 test_gpu_apple<-run_single_point_analysis_sub_gpu("data/",backend="mlx")
 # to run on 192 wells, first 12 columns of 384-well plate
 test_half_plate<-run_single_point_analysis_sub_gpu("data/",wellset1=get_well_subset(1:16,1:12))
-
-print(test) # we got alpha-beta pairs!
-table(test$method) # note that same alpha-beta pairs can be called by different methods, so there are duplicates
+# now lets run on the small dataset from the manuscript (download and unpack data from zenodo https://doi.org/10.5281/zenodo.14010377 first!)
+cd8_tp2<-run_single_point_analysis_sub_gpu("exp3_clones/TCR_clones_ID03/",wellset1=get_well_subset(1:16,1:12),backend="numpy") # CD8 repertoire for time point 2 for COVID patient (left half of 384-well plate)
+print(cd8_tp2) # we got alpha-beta pairs!
+table(cd8_tp2$method) # note that same alpha-beta pairs can be called by different methods, so there are duplicates
 ```
 
 ### Input for pairing pipeline
