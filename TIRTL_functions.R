@@ -276,7 +276,7 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   print(Sys.time())
   if(compute==T)
     if(backend=="cupy")system(paste0("python3 cupy_backend_script.py ",prefix,collapse=""))
-    else if(backend=="mlx")system(paste0("python3 mlx_backend_script_old.py ",prefix,collapse=""))
+    else if(backend=="mlx")system(paste0("python3 mlx_backend_script.py ",prefix,collapse=""))
       else{system(paste0("python3 numpy_backend_script.py ",prefix,collapse=""))}
 
   print("Loading and filtering results, adding amino acid and V segment information")
