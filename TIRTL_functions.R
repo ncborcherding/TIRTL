@@ -257,7 +257,7 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   print(dim(bigmas))
   print("Merging beta clonesets...")
   bigmb<-big_merge_freqs2(mlistb,min_reads = min_reads)
-  print("Done! beta alpha clones and wells after filtering:")
+  print("Done! beta clones and wells after filtering:")
   print(dim(bigmb))
   bigmbs<-bigmb[rowSums(bigmb>0)>min_wells,]
   print(Sys.time())

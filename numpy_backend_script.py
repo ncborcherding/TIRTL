@@ -18,7 +18,7 @@ def madhyper_process(prefix):
     total_chunks = bigmas.shape[0] // chunk_size
     b_total = mx.sum(bigmbs > 0, axis=1,keepdims=True)
     bigmbs=(bigmbs > 0).T.astype(mx.float32)
-    print("start time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("start time for MAD-HYPE:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     for ch in range(0, bigmas.shape[0], chunk_size):
         percent_complete = int((ch // chunk_size + 1) / total_chunks * 100)
         # Print progress only on 5%, 10%, etc.
@@ -53,7 +53,7 @@ def madhyper_process(prefix):
 
         results.append(result)
 #result is a list of dictionaries, each dictionary contains the results for a chunk of rows. You can convert it to a pandas DataFrame like this: 
-    print("end time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("end time for MAD-HYPE:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 #make pandas dataframe from each element of results and concatenate them
     results_df = pd.concat([pd.DataFrame(result) for result in results])
@@ -63,7 +63,7 @@ def madhyper_process(prefix):
 
 
 def correlation_process(prefix, min_wells=2):
-    print("start load:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("start load for T-Shell:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     bigmas = mx.array(np.loadtxt(prefix+'_bigmas.tsv', delimiter='\t', dtype=np.float32))
     bigmbs = mx.array(np.loadtxt(prefix+'_bigmbs.tsv', delimiter='\t', dtype=np.float32))
     rowinds_bigmas = mx.arange(bigmas.shape[0])
@@ -91,7 +91,7 @@ def correlation_process(prefix, min_wells=2):
     b_total = mx.sum(bigmbs > 0, axis=1, keepdims=True)
     bigmbs = (bigmbs > 0).T.astype(mx.float32)
     
-    print("start processing time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("start processing time for T-Shell:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     for ch in range(0, bigmas.shape[0], chunk_size):
         percent_complete = int((ch // chunk_size + 1) / total_chunks * 100)
         if percent_complete % 10 == 0 and percent_complete > 0:
@@ -129,7 +129,7 @@ def correlation_process(prefix, min_wells=2):
         
         results.append(result)
     
-    print("end time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("end time for T-Shell:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     results_df = pd.concat([pd.DataFrame(result) for result in results])
     results_df.to_csv(prefix+'_corresults.csv', index=False)
 

@@ -28,7 +28,7 @@ def madhyper_process(prefix, min_wells=4):
     total_chunks = bigmas.shape[0] // chunk_size
     b_total = mx.sum(bigmbs > 0, axis=1, keepdims=True)
     bigmbs = (bigmbs > 0).T.astype(mx.float32)
-    print("start time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("start time for MAD-HYPE:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     for ch in range(0, bigmas.shape[0], chunk_size):
         percent_complete = int((ch // chunk_size + 1) / total_chunks * 100)
@@ -51,7 +51,7 @@ def madhyper_process(prefix, min_wells=4):
         }
         results.append(result)
 
-    print("end time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("end time for MAD-HYPE:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     results_df = pd.concat([pd.DataFrame(result) for result in results])
     results_df.to_csv(prefix+'_madhyperesults.csv', index=False)
     print(f"Number of pairs: {results_df.shape[0]}")
@@ -82,7 +82,7 @@ def correlation_process(prefix, min_wells=4):
     bigmb_w1_scaled = (bigmb_w1_scaled / mx.linalg.norm(bigmb_w1_scaled, ord=2, axis=1, keepdims=True)).T
     b_total = mx.sum(bigmbs > 0, axis=1, keepdims=True)
     bigmbs = (bigmbs > 0).T.astype(np.float32)
-    print("start processing time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("start processing time for T-Shell:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     for ch in range(0, bigmas.shape[0], chunk_size):
         percent_complete = int((ch // chunk_size + 1) / total_chunks * 100)
@@ -110,7 +110,7 @@ def correlation_process(prefix, min_wells=4):
         }
         results.append(result)
 
-    print("end time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("end time for T-Shell:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     results_df = pd.concat([pd.DataFrame(result) for result in results])
     results_df.to_csv(prefix + '_corresults.csv', index=False)
 
