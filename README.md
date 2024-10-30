@@ -36,10 +36,25 @@ print(test) # we got alpha-beta pairs!
 table(test$method) # note that same alpha-beta pairs can be called by different methods, so there are duplicates
 ```
 
-### Input
+### Input for pairing pipeline
 The input data should be a folder with TCRalpha and TCRbeta repertoires from one plate in separate tab separated files from standard _mixcr_ output.
 
-### Output
+Other parameters are optional and can be set to change the default behavior of the pipeline:
+_prefix_ (default="tmp") - prefix for the output files
+
+_well_filter_thres_ (default=0.5 of mean number of unique clones across alpha wells) - threshold for the number unique clones in a well to be considered as a valid well. Decreasing this threshold will increase the number of wells considered as valid, but may also increase the number of false positives.
+
+_min_reads_ (default=0) - minimum number of reads a clone to be included. By default all clones are included. Increase this number if you suspect cross-contamination between wells or high number of sequencing errors. 
+
+_well_pos_ (default=3) - position of the well id in the file name if split by underbar. For example, if the file name is "3123233_MVP093_TIRTLseq_**A1**_S8.alpha_old_ID10.clones_TRA.tsv", the well_pos should be 4.
+
+_wellset1_ (default=get_well_subset(1:16,1:24)) - subset of wells to be analyzed (if you loaded your sample to part of the plate). By default all wells in 384 well plate are analyzed. For example, to analyze the first 12 columns of a 384-well plate, you can use get_well_subset(1:16,1:12).
+
+_compute_ (default=T) - whether to run backend script for pairing. Only set F if you want to run the python backend script separately.
+
+_backend_ (default="numpy") - backend for the pairing. Can be "numpy" for CPU, "cupy" for Nvidia GPU, or "mlx" for Apple Silicon GPU.
+
+### Output for pairing pipeline
 This will take TCRalpha and TCRbeta repertoires from the folder "data/" and pair them using the default parameters. The output will be saved in the working directory under _tmp_TIRTLoutput.tsv_ and also returned to R as _data.table_.
 
 _wi_ - number of wells where alpha is found, but not beta

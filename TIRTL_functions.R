@@ -301,7 +301,7 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   }
   
   #result<-result[order(-method),][!duplicated(alpha_beta),]#version without filter
-  result<-merge(result, unique_combinations, by = c("wi", "wj", "wij"), all.x = TRUE)[method=="madhype"|(method=="tshell"&wij>2&pval_adj<1e-10&(loss_a_frac+loss_b_frac)<0.5001),]# 0.5001 is to avoid rounding errors and compatibility with previous version, where we wrote unfiltered results to disc first
+  result<-merge(result, unique_combinations, by = c("wi", "wj", "wij"), all.x = TRUE)[method=="madhype"|(method=="tshell"&wij>2&pval_adj<1e-10&(loss_a_frac+loss_b_frac)<0.5),]
   
   #result<-result[(((loss_a_frac+loss_b_frac)<0.5)&(wij>3))|(score>0.1),]
   
