@@ -40,7 +40,7 @@ table(cd8_tp2$method) # note that same alpha-beta pairs can be called by differe
 ```
 
 ### Input for pairing pipeline
-The input data should be a folder with TCRalpha and TCRbeta repertoires from one plate in separate tab separated files from standard _mixcr_ output.
+The input data should be a folder with TCRalpha and TCRbeta repertoires from one plate in separate tab separated files from standard _mixcr_ output. Filenames should contain alphanumeric well id in the format "A1", "B2", etc separated by underbars.
 
 Other parameters are optional and can be set to change the default behavior of the pipeline:
 
