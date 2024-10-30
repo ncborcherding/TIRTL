@@ -40,6 +40,7 @@ table(test$method) # note that same alpha-beta pairs can be called by different 
 The input data should be a folder with TCRalpha and TCRbeta repertoires from one plate in separate tab separated files from standard _mixcr_ output.
 
 Other parameters are optional and can be set to change the default behavior of the pipeline:
+
 _prefix_ (default="tmp") - prefix for the output files
 
 _well_filter_thres_ (default=0.5 of mean number of unique clones across alpha wells) - threshold for the number unique clones in a well to be considered as a valid well. Decreasing this threshold will increase the number of wells considered as valid, but may also increase the number of false positives.
