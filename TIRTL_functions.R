@@ -183,7 +183,7 @@ na_to0<-function (x) {
   x
 }
 
-run_longitudinal_analysis_sub<-function(folder1,folder2,well_pos1=3,well_pos2=3,well_filter_thres=0.75,wellset1=get_well_subset(1:16,1:24),wellset2=get_well_subset(1:16,1:24)) #full by default
+run_longitudinal_analysis_sub<-function(folder1,folder2,well_pos1=3,well_pos2=3,well_filter_thres=0.75,wellset1=get_well_subset(1:16,1:24),wellset2=get_well_subset(1:16,1:24)) #full plates by default
 {
   print("start double timepoint analysis")
   print(Sys.time())
@@ -236,38 +236,41 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   rm(mlist)
   
   qc<-get_good_wells_sub(mlista,mlistb,clone_thres,pos=well_pos,wellset=wellset1)
-  print("clone_threshold")
+  print("clone_threshold for QC:")
   print(clone_thres)
-  print("alpha_wells_working")
+  print("alpha wells passing QC:")
   print(table(qc$a))
-  print("alpha_wells_working")
-  print(table(qc$a))
-  #result<-do_analysis_madhyper_r_optim_both(mlista[qc$a],mlistb[qc$b],n_cells = clone_thres)
+  print("beta wells passing QC:")
+  print(table(qc$b))
+  
   mlista<-mlista[qc$a]#downsize to qc
   mlistb<-mlistb[qc$b]#downsize to qc
   
   print(Sys.time())
-  print("start")
+  print("Merging alpha clonesets...")
   bigma<-big_merge_freqs2(mlista,min_reads = min_reads)
+  print("Done! Unique alpha clones and wells after filtering:")
   print(dim(bigma))
   bigmas<-bigma[rowSums(bigma>0)>min_wells,]
   print(Sys.time())
-  print("big merge done")
-  print("bigmas")
+  print(paste0("Unique alpha clones and wells in more than: ",min_wells," wells"))
   print(dim(bigmas))
+  print("Merging beta clonesets...")
   bigmb<-big_merge_freqs2(mlistb,min_reads = min_reads)
+  print("Done! beta alpha clones and wells after filtering:")
   print(dim(bigmb))
   bigmbs<-bigmb[rowSums(bigmb>0)>min_wells,]
   print(Sys.time())
-  print("big merge done")
-  print("bigmbs")
+  print(paste0("Unique beta clones and wells in more than: ",min_wells," wells"))
   print(dim(bigmbs))
+  print("Writing files for back-end pairing script...")
   write(rownames(bigmas),file=paste0(prefix,"_bigmas_names.tsv"))
   write(rownames(bigmbs),file=paste0(prefix,"_bigmbs_names.tsv"))
   write_dat(as.matrix(bigmas),fname = paste0(prefix,"_bigmas.tsv"))
   write_dat(as.matrix(bigmbs),fname = paste0(prefix,"_bigmbs.tsv"))
   print(Sys.time())
   n_wells=ncol(bigmas)
+  print("Pre-computing look-up table:")
   mdh<-madhyper_surface(n_wells = ncol(bigmas),cells = clone_thres,alpha=2,prior = 1/(as.numeric(nrow(bigmas))*(as.numeric(nrow(bigmbs))))**0.5)
   write_dat(mdh,fname = paste0(prefix,"_mdh.tsv"))
   print(Sys.time())
@@ -275,9 +278,10 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
     if(backend=="cupy")system(paste0("python3 cupy_backend_script.py ",prefix,collapse=""))
     else if(backend=="mlx")system(paste0("python3 mlx_backend_script_old.py ",prefix,collapse=""))
       else{system(paste0("python3 numpy_backend_script.py ",prefix,collapse=""))}
-  # here goes SYS call to python script. 
-  #python3 mlx_madhype_script ~/R_projects/mlx_dev/plate6
-  # and here we go read it: 
+
+  print("Loading and filtering results, adding amino acid and V segment information")
+  
+    # and here we go read it: 
   gpu_res<-read_gpu(prefix)
   gpu_res_corr<-read_gpu_corr(prefix)
   # I also want to compute 
@@ -292,12 +296,12 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   
   unique_combinations <- unique(result[, .(wi, wj, wij)])
   for (i in 1:nrow(unique_combinations)){
-    if(i%%1000==0)print(i)
+    #if(i%%1000==0)print(i)
     unique_combinations$score[i]<-log10(estimate_pair_prob(wi = unique_combinations[i,]$wi,wj = unique_combinations[i,]$wj,w_ij = unique_combinations[i,]$wij,n_wells,cpw = clone_thres,alpha = 2,prior=1/(as.numeric(nrow(bigmas))*(as.numeric(nrow(bigmbs))))**0.5))
   }
   
   #result<-result[order(-method),][!duplicated(alpha_beta),]#version without filter
-  result<-merge(result, unique_combinations, by = c("wi", "wj", "wij"), all.x = TRUE)[method=="madhype"|(method=="tshell"&wij>2&pval_adj<1e-10&(loss_a_frac+loss_b_frac)<0.5),]
+  result<-merge(result, unique_combinations, by = c("wi", "wj", "wij"), all.x = TRUE)[method=="madhype"|(method=="tshell"&wij>2&pval_adj<1e-10&(loss_a_frac+loss_b_frac)<0.5001),]# 0.5001 is to avoid rounding errors and compatibility with previous version, where we wrote unfiltered results to disc first
   
   #result<-result[(((loss_a_frac+loss_b_frac)<0.5)&(wij>3))|(score>0.1),]
   
@@ -310,7 +314,9 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   result$cdr3b=tp_b$cdr3aa
   result$vb=tp_b$v
   result$jb=tp_b$j
-  
+  print(Sys.time())
+  print("All is done! Number of paired clones:")
+  print(table(result$method))
   fwrite(result,paste0(prefix,"_TIRTLoutput.tsv"),sep="\t")    
   return(result)
 }
