@@ -225,7 +225,7 @@ run_single_point_analysis_sub_gpu<-function(folder_path,prefix="tmp",well_filter
   print("start")
   print(Sys.time())
   mlist<-lapply(list.files(path = folder_path,full.names = T),fread)
-  names(mlist)<-list.files(path = folder_path,full.names = F)
+  names(mlist)<-gsub(".","_",list.files(path = folder_path,full.names = F),fixed=T)
   mlista<-geta(mlist)
   mlistb<-getb(mlist)
   print("clonesets loaded")
