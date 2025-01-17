@@ -9,18 +9,22 @@ For Apple Silicon GPU install Apple MLX library from [here](https://github.com/m
 
 
 
-R dependencies are _Matrix_ and _data.table_ packages, available by default with most distributions. If not, you can install them by running from R console:
+R dependencies are _Matrix_ (vesrsion >=1.5) and _data.table_ (v.>1.15) packages, available by default with most distributions. If not, you can install them by running from R console:
 ```R
 install.packages("Matrix")
 install.packages("data.table")
 ```
 
-Python3 dependencies are _numpy_, _pandas_, _cupy_ (for Nvidia GPU runs, optional), _mlx_ (for Apple GPU runs, optional). You can install them by running:
+Python3 dependencies are _numpy_ (v.>1.26), _pandas_ (v.>2.2), _cupy_ (v. >13.2 for Nvidia GPU runs, optional), _mlx_ (v. >=0.13 for Apple GPU runs, optional). You can install them by running:
 ```bash
 pip install numpy pandas
 pip install cupy
 pip install mlx
 ```
+
+If the dependencies are installed, just copying the repository is enough to run the code, no additional install or setup needed.
+The code was tested on macOS 14-15 (CPU/GPU), Red Hat Enterprise Linux 8.8 (CPU/Nvidia GPU) and Windows 11 Enterprise (tested on CPU only).
+
 ## Quick Start
 Install dependencies, download repository and run run the following commands in R:
 ```R
@@ -33,10 +37,14 @@ test_gpu_nvidia<-run_single_point_analysis_sub_gpu("data/",backend="cupy")
 test_gpu_apple<-run_single_point_analysis_sub_gpu("data/",backend="mlx")
 # to run on 192 wells, first 12 columns of 384-well plate
 test_half_plate<-run_single_point_analysis_sub_gpu("data/",wellset1=get_well_subset(1:16,1:12))
-# now lets run on the small dataset from the manuscript (download and unpack data from zenodo https://doi.org/10.5281/zenodo.14010377 first!)
+# DEMO! lets run on the small dataset from the manuscript (download and unpack data from zenodo https://doi.org/10.5281/zenodo.14010377 first!)
+# This test takes ~6 minutes on CPU on a 2021 Macbook Pro (M1 Pro 32 GB RAM)
 cd8_tp2<-run_single_point_analysis_sub_gpu("exp3_clones/TCR_clones_ID03/",wellset1=get_well_subset(1:16,1:12),backend="numpy") # CD8 repertoire for time point 2 for COVID patient (left half of 384-well plate)
 print(cd8_tp2) # we got alpha-beta pairs!
 table(cd8_tp2$method) # note that same alpha-beta pairs can be called by different methods, so there are duplicates
+#expected output: 
+#madhype  tshell 
+#  16369    9891 
 ```
 
 ### Input for pairing pipeline
@@ -105,5 +113,29 @@ _vb_ - beta V gene
 
 _jb_ - beta J gene
 
+### Running on your own data
+To run the pipeline on your own data, you need to have TCRalpha and TCRbeta repertoires processed with _mixcr_ (v. >= 4.6) separate for each well. 
+
+We use the following mixcr pipeline for each well: 
+```bash
+$MIXCR analyze generic-amplicon --species hsa --rna \
+--tag-pattern "^N{0:1}(SAMPLE:N{7})(R1:*)\^(R2:*)" \
+--floating-left-alignment-boundary \
+--floating-right-alignment-boundary C \
+--split-by-sample \
+--sample-sheet plate_index.tsv \
+${fp}_L{{n}}_R1.fastq.gz ${fp}_L{{n}}_R2.fastq.gz \
+$OUTDIR/${sample} \
+--use-local-temp
+```
+where _plate_index.tsv_ is a tab separated file containing you PCR I plate indices (see example in this repo!). 
+
+_MIXCR_ variable contains path to _mixcr_ executable.
+
+_fp_ is the path to the fastq files for given wells without the _L{n}_R1.fastq.gz and _L{n}_R2.fastq.gz suffixes.
+
+_OUTDIR_ is the output directory for the mixcr output.
+
+_sample_ is the file name for the output for the given well (usually only filename from _fp_).
 
 
