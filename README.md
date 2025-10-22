@@ -118,7 +118,7 @@ To run the pipeline on your own data, you need to have TCRalpha and TCRbeta repe
 
 We use the following mixcr pipeline for each well: 
 ```bash
-$MIXCR analyze generic-tcr-amplicon --species hsa --rna \
+$MIXCR analyze generic-amplicon --species hsa --rna \
 --tag-pattern "^N{0:1}(SAMPLE:N{7})(R1:*)\^(R2:*)" \
 --floating-left-alignment-boundary \
 --floating-right-alignment-boundary C \
